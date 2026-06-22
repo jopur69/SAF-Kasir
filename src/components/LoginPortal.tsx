@@ -480,6 +480,8 @@ export default function LoginPortal({ onLoginSuccess, onAdminLoginSuccess }: Log
       console.error('Google Auth login error:', err);
       if (err.code === 'auth/operation-not-allowed') {
         setErrorMess('Google Login belum diijinkan di Firebase Console > Authentication.');
+      } else if (err.code === 'auth/unauthorized-domain') {
+        setErrorMess(`Domain "${window.location.hostname}" belum diotorisasi di Firebase. Silakan tambahkan domain ini ke daftar 'Authorized Domains' di Firebase Console > Authentication > Settings > Authorized Domains.`);
       } else {
         setErrorMess('Gagal login via Google: ' + (err.message || 'Silakan coba lagi.'));
       }
