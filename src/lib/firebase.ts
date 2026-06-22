@@ -5,7 +5,7 @@
 
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDocFromServer } from "firebase/firestore";
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDocFromServer, getFirestore } from "firebase/firestore";
 import firebaseConfigFromJson from "../../firebase-applet-config.json";
 
 // Allow overriding via environment variables (great for Vercel deploy)
@@ -24,12 +24,20 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
-// Enable fully automatic offline local persistence cache in Firestore
-export const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentMultipleTabManager(),
-  }),
-}, firebaseConfig.firestoreDatabaseId || "(default)");
+// Enable fully automatic offline local persistence cache in Firestore (with graceful fallback)
+let dbInstance: any;
+try {
+  dbInstance = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentMultipleTabManager(),
+    }),
+  }, firebaseConfig.firestoreDatabaseId || "(default)");
+} catch (e) {
+  console.warn("Offline cache initialization failed, falling back to default Firestore:", e);
+  dbInstance = getFirestore(app, firebaseConfig.firestoreDatabaseId || "(default)");
+}
+
+export const db = dbInstance;
 
 export enum OperationType {
   CREATE = 'create',
@@ -87,7 +95,7 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
   }
   
   console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
+  // Safely log the error instead of throwing to prevent asynchronous callback errors from crashing the entire React app.
 }
 
 // Validation helper to test Connection to Firestore

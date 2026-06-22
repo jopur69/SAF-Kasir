@@ -56,6 +56,31 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
+  // Auto-restore currentUser from Firestore if firebaseUser is logged in but local app state currentUser is null
+  useEffect(() => {
+    if (isAuthReady && firebaseUser && !currentUser && !isFirebasePlaceholder) {
+      const uid = firebaseUser.uid;
+      const isUserAdmin = firebaseUser.email === 'admin@kasirpintar.com' || firebaseUser.email === 'adminkursus@gmail.com';
+      if (isUserAdmin) return;
+
+      console.log('Auth detected user but local state currentUser is null. Fetching user profile...');
+      const userRef = doc(db, 'registered_users', uid);
+      getDoc(userRef).then((docSnap) => {
+        if (docSnap.exists()) {
+          const matched = docSnap.data() as RegisteredUser;
+          console.log('Successfully restored currentUser session from Firestore:', matched.storeName);
+          setCurrentUser(matched);
+          setActiveStoreId(matched.id);
+          localStorage.setItem('kasir_current_user', JSON.stringify(matched));
+        } else {
+          console.warn('UserProfile document not found in registered_users for uid:', uid);
+        }
+      }).catch((err) => {
+        console.error('Error fetching registered_users doc during session restore:', err);
+      });
+    }
+  }, [isAuthReady, firebaseUser, currentUser]);
+
   // Multi-Store Profiles List
   const [stores, setStores] = useState<{ id: string; name: string }[]>(() => {
     const saved = localStorage.getItem('kasir_stores');
