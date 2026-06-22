@@ -1,0 +1,214 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile or store configuration details.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "address"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Products details in store stock.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "barcode": { "type": "string" },
+        "category": { "type": "string" },
+        "purchasePrice": { "type": "number" },
+        "sellPrice": { "type": "number" },
+        "stock": { "type": "number" },
+        "minStock": { "type": "number" },
+        "unit": { "type": "string" }
+      },
+      "required": ["id", "name", "category", "purchasePrice", "sellPrice", "stock", "minStock", "unit"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Transactions completed at the cash register.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "totalBill": { "type": "number" },
+        "paidAmount": { "type": "number" },
+        "changeAmount": { "type": "number" },
+        "profit": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["Tunai", "QRIS", "Utang"] },
+        "customerName": { "type": "string" }
+      },
+      "required": ["id", "date", "totalBill", "paidAmount", "changeAmount", "profit", "paymentMethod"]
+    },
+    "Debt": {
+      "title": "Debt",
+      "description": "Customer debts or Kasbon registers.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerName": { "type": "string" },
+        "phone": { "type": "string" },
+        "totalDebt": { "type": "number" },
+        "remainingDebt": { "type": "number" },
+        "notes": { "type": "string" },
+        "dateCreated": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["Belum Lunas", "Lunas"] }
+      },
+      "required": ["id", "customerName", "phone", "totalDebt", "remainingDebt", "dateCreated", "status"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "Operational expenses registered by the store.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "category": { "type": "string" },
+        "amount": { "type": "number" },
+        "notes": { "type": "string" }
+      },
+      "required": ["id", "date", "category", "amount"]
+    },
+    "UsernameUniqueMapping": {
+      "title": "UsernameUniqueMapping",
+      "description": "Mapping from a lowercase unique username to user email and ID.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "userId": { "type": "string" }
+      },
+      "required": ["email", "userId"]
+    },
+    "SuperadminConfig": {
+      "title": "SuperadminConfig",
+      "description": "Global superadmin configuration, profile contact, and panel password.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "notes": { "type": "string" },
+        "password": { "type": "string" }
+      },
+      "required": ["name", "phone", "email", "notes", "password"]
+    },
+    "RegisteredUser": {
+      "title": "RegisteredUser",
+      "description": "User account registration details used for licensing and auth checks.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "storeName": { "type": "string" },
+        "username": { "type": "string" },
+        "email": { "type": "string" },
+        "password": { "type": "string" },
+        "address": { "type": "string" },
+        "dateCreated": { "type": "string", "format": "date-time" },
+        "expiryDate": { "type": "string" },
+        "maxTransactions": { "type": "number" },
+        "status": { "type": "string", "enum": ["active", "suspended"] }
+      },
+      "required": ["id", "storeName", "username", "email", "password", "dateCreated"]
+    },
+    "Feedback": {
+      "title": "Feedback",
+      "description": "User suggestions and improvements for the application.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "storeName": { "type": "string" },
+        "username": { "type": "string" },
+        "email": { "type": "string" },
+        "category": { "type": "string" },
+        "urgency": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string", "enum": ["Baru", "Diproses", "Selesai"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "storeName", "category", "message", "createdAt", "status"]
+    },
+    "Poll": {
+      "title": "Poll",
+      "description": "Quick polls created by superadmin to gather feedback from warung users.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "question": { "type": "string" },
+        "options": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "status": { "type": "string", "enum": ["Aktif", "Nonaktif"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "question", "options", "status", "createdAt"]
+    },
+    "PollResponse": {
+      "title": "PollResponse",
+      "description": "Voted options from users in response to the active polls.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "pollId": { "type": "string" },
+        "userId": { "type": "string" },
+        "storeName": { "type": "string" },
+        "username": { "type": "string" },
+        "selectedOption": { "type": "string" },
+        "answeredAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "pollId", "userId", "storeName", "username", "selectedOption", "answeredAt"]
+    }
+  },
+  "firestore": {
+    "usernames/{username}": {
+      "schema": "UsernameUniqueMapping",
+      "description": "Registry of unique lowercased usernames to prevent duplicates."
+    },
+    "users/{userId}": {
+      "schema": "UserProfile",
+      "description": "The user's own store settings."
+    },
+    "users/{userId}/products/{productId}": {
+      "schema": "Product",
+      "description": "List of products owned by the user's store."
+    },
+    "users/{userId}/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Historical transactions list under the user's store."
+    },
+    "users/{userId}/debts/{debtId}": {
+      "schema": "Debt",
+      "description": "List of customer kasbon portfolios."
+    },
+    "users/{userId}/expenses/{expenseId}": {
+      "schema": "Expense",
+      "description": "List of store operational expenses."
+    },
+    "config/{configId}": {
+      "schema": "SuperadminConfig",
+      "description": "System-wide settings such as the superadmin profile contacts."
+    },
+    "registered_users/{userId}": {
+      "schema": "RegisteredUser",
+      "description": "Master list of registered users/warungs accessible both globally and by superadmin."
+    },
+    "feedback/{feedbackId}": {
+      "schema": "Feedback",
+      "description": "User suggestions and improvements sent to superadmin."
+    },
+    "polls/{pollId}": {
+      "schema": "Poll",
+      "description": "Quick polls created by the superadmin."
+    },
+    "poll_responses/{responseId}": {
+      "schema": "PollResponse",
+      "description": "Responses submitted by users."
+    }
+  }
+}

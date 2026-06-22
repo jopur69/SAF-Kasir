@@ -1,0 +1,8 @@
+{
+  "name": "Remix: SAF Kasir",
+  "description": "Aplikasi Kasir (POS), Manajemen Stok Barang, Riwayat Penjualan, dan Buku Utang yang ringan dan responsif untuk HP dan PC.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

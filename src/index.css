@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Global Theme Override: Remap Indigo to premium flat Emerald Green for low-spec/high-visibility screens */
+  --color-indigo-50: #ecfdf5;
+  --color-indigo-100: #d1fae5;
+  --color-indigo-200: #a7f3d0;
+  --color-indigo-300: #6ee7b7;
+  --color-indigo-400: #34d399;
+  --color-indigo-500: #10b981;
+  --color-indigo-600: #059669;
+  --color-indigo-700: #047857;
+  --color-indigo-750: #065f46;
+  --color-indigo-800: #065f46;
+  --color-indigo-900: #064e3b;
+  --color-indigo-950: #022c22;
+}
+
+body {
+  background-color: #f8fafc; /* slate-50 */
+  color: #0f172a; /* slate-900 */
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Overrides for low-spec mobile phone performance and low-contrast displays */
+@layer base {
+  /* Disable expensive backdrop blurs globally to eliminate rendering lag on weak webviews */
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .backdrop-blur-lg,
+  .backdrop-blur-xl,
+  .backdrop-blur-xs,
+  .backdrop-blur {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Replace heavy blurred shadows with flat, highly legible thin light borders */
+  .shadow-xs,
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl,
+  .shadow-2xl,
+  .shadow-indigo-100,
+  .shadow-emerald-100 {
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12) !important;
+    border: 1px solid rgba(15, 23, 42, 0.1) !important;
+  }
+
+  /* Make sure inputs and interactive cards are sharply separated */
+  input, select, textarea {
+    border: 1.5px solid #cbd5e1 !important;
+    background-color: #ffffff !important;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: #059669 !important;
+    background-color: #ffffff !important;
+  }
+
+  /* Prevent endless looping pulse animations from choking the rendering thread and draining battery */
+  .animate-pulse {
+    animation: none !important;
+  }
+
+  /* Remove 3D transform scaling on click/hover which forces layer recalculations on older Chrome/Android WebKit */
+  .active\:scale-95,
+  .active\:scale-98,
+  .active\:scale-\[0\.95\],
+  .active\:scale-\[0\.96\],
+  .active\:scale-\[0\.98\],
+  .active\:scale-\[0\.99\],
+  .hover\:scale-\[1\.01\],
+  .hover\:scale-105,
+  .hover\:scale-\[1\.05\] {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* Boost text contrast of secondary styling for readability under bright outdoor light or low-end screens */
+  .text-slate-400 {
+    color: #475569 !important; /* Slate-600 */
+  }
+  .text-slate-500 {
+    color: #334155 !important; /* Slate-700 */
+  }
+  .text-slate-600 {
+    color: #1e293b !important; /* Slate-800 */
+  }
+
+  /* Ensure button texts are solid and clearly readable in high-contrast black, along with icons inside them */
+  button, a.button, button *, a.button * {
+    color: #000000 !important;
+  }
+  button svg, a.button svg, button svg *, a.button svg * {
+    stroke: #000000 !important;
+    color: #000000 !important;
+  }
+  button, a {
+    letter-spacing: 0.01em !important;
+  }
+}
+
+/* Print CSS Styles specifically crafted for 58mm Thermal Printer */
+@media print {
+  @page {
+    size: 58mm auto;
+    margin: 0;
+  }
+  
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Hide everything under the body */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Make only the thermal receipt card visible */
+  #receipt-thermal,
+  #receipt-thermal * {
+    visibility: visible !important;
+  }
+
+  /* Position receipt card at the absolute top-left for clean paper feed */
+  #receipt-thermal {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 48mm !important; /* 58mm paper with printable printable width */
+    max-width: 48mm !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    padding: 4px !important;
+    margin: 0 !important;
+  }
+}
